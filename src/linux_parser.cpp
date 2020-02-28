@@ -74,18 +74,40 @@ long LinuxParser::UpTime() {
   return stol(uptime);
 }
 
+vector<string> LinuxParser::CpuUtilization() { 
+  string line;
+  std::ifstream stream(kProcDirectory + kStatFilename);
+  if (stream.is_open()) {
+    std::getline(stream, line); 
+    std::istringstream linestream(line);
+    std::vector<std::string> output;
+    std::string val;
+
+    while (linestream >> val){
+      if(val != "cpu"){ output.push_back(val);}
+    }
+    return output;
+  } 
+}
+
+
+
 
 // TODO: Read and return the system memory utilization
 float LinuxParser::MemoryUtilization() { return 0.0; }
 
-// TODO: Read and return CPU utilization
-vector<string> LinuxParser::CpuUtilization() { return {}; }
 
 // TODO: Read and return the total number of processes
 int LinuxParser::TotalProcesses() { return 0; }
 
 // TODO: Read and return the number of running processes
 int LinuxParser::RunningProcesses() { return 0; }
+
+
+
+
+
+
 
 // TODO: Read and return the command associated with a process
 // REMOVE: [[maybe_unused]] once you define the function
