@@ -79,17 +79,18 @@ long LinuxParser::UpTime() {
 vector<string> LinuxParser::CpuUtilization() { 
   string line;
   std::ifstream stream(kProcDirectory + kStatFilename);
+
+    std::vector<std::string> output;
   if (stream.is_open()) {
     std::getline(stream, line); 
     std::istringstream linestream(line);
-    std::vector<std::string> output;
     std::string val;
 
     while (linestream >> val){
       if(val != "cpu"){ output.push_back(val);}
     }
-    return output;
   } 
+  return output;
 }
 
 string LinuxParser::FindLineByKey(string path, string key){
@@ -148,6 +149,7 @@ string LinuxParser::Command(int pid) {
     std::getline(stream, line); 
     return line;
   }
+  return string();
 }
 
 string LinuxParser::Ram(int pid) {
