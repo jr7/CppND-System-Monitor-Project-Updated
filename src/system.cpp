@@ -3,6 +3,7 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 #include "linux_parser.h"
 #include "process.h"
@@ -20,10 +21,16 @@ long int System::UpTime() { return LinuxParser::UpTime();}
 float System::MemoryUtilization() { return LinuxParser::MemoryUtilization();}
 int System::RunningProcesses() { return LinuxParser::RunningProcesses();}
 int System::TotalProcesses() { return LinuxParser::TotalProcesses();}
-
-
-// TODO: Return the system's CPU
 Processor& System::Cpu() { return cpu_; }
 
-// TODO: Return a container composed of the system's processes
-vector<Process>& System::Processes() { return processes_; }
+vector<Process>& System::Processes() { 
+
+    m_processes.clear();
+    for(auto pid : LinuxParser::Pids()){
+        auto process = Process(pid);
+        m_processes.push_back(process);
+    }
+    //std::sort(m_processes.begin(), m_processes.end());
+    return m_processes;
+}
+
