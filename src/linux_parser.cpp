@@ -126,14 +126,17 @@ float LinuxParser::MemoryUtilization() {
   return (memtotal - memfree)/memtotal;
 }
 
+int LinuxParser::TotalProcesses() { 
+  string path = kProcDirectory + kStatFilename;
+  string process_str = LinuxParser::FindLineByKey(path, "processes");
+  return std::stol(LinuxParser::GetElementByIndex(process_str, 1));
+}
 
-
-// TODO: Read and return the total number of processes
-int LinuxParser::TotalProcesses() { return 0; }
-
-// TODO: Read and return the number of running processes
-int LinuxParser::RunningProcesses() { return 0; }
-
+int LinuxParser::RunningProcesses() { 
+  string path = kProcDirectory + kStatFilename;
+  string process_str = LinuxParser::FindLineByKey(path, "procs_running");
+  return std::stol(LinuxParser::GetElementByIndex(process_str, 1));
+}
 
 
 
@@ -163,7 +166,11 @@ long LinuxParser::UpTime(int pid[[maybe_unused]]) { return 0; }
 
 
 
-//NOT USED
+///////////////////
+///////////////////
+//   NOT USED    //
+///////////////////
+///////////////////
 
 // TODO: Read and return the number of jiffies for the system
 long LinuxParser::Jiffies() { return 0; }
