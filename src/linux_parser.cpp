@@ -194,8 +194,20 @@ vector<string> LinuxParser::ProcessUtilizaton(int pid) {
   return out;
 }
 
+long LinuxParser::UpTime(int pid) { 
+  std::string path = kProcDirectory + std::to_string(pid) + kStatFilename;
+  std::ifstream filestream(path);
+  string line;
 
-long LinuxParser::UpTime(int pid[[maybe_unused]]) { return 0; }
+  if (filestream.is_open()) { std::getline(filestream, line); }
+  string starttime = LinuxParser::GetElementByIndex(line, 21);
+
+  if(starttime.size() > 0){
+    long uptime = std::stol(starttime)/sysconf(_SC_CLK_TCK);
+    return uptime;
+  }
+  return 0;
+}
 
 ///////////////////
 ///////////////////

@@ -18,13 +18,14 @@ Process::Process(int pid){
     m_ram = LinuxParser::Ram(m_pid);
     m_user = LinuxParser::User(m_pid);
     m_cpu_util = this->m_ComputeUtilization(m_pid);
-    m_uptime = 0;
+    m_uptime = LinuxParser::UpTime(m_pid);
 }
 
 int Process::Pid() {return m_pid;}
 string Process::Command() {return m_command;}
 string Process::Ram() {return m_ram;}
 string Process::User() {return m_user;}
+long int Process::UpTime() { return m_uptime; }
 
 float Process::CpuUtilization() const {return m_cpu_util;}
 
@@ -54,6 +55,3 @@ bool Process::operator<(Process const& a) const {
     } 
     return false;
 }
-
-// TODO: Return the age of this process (in seconds)
-long int Process::UpTime() { return 0; }
