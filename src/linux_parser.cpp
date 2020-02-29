@@ -156,7 +156,7 @@ string LinuxParser::Ram(int pid) {
 
   if (process_str.size() > 0) {
     float ram_usg =  std::stof(LinuxParser::GetElementByIndex(process_str, 1));
-    return std::to_string(ram_usg/1000.);
+    return std::to_string(int(ram_usg/1000.));
   }
   return "0";
 }
@@ -177,6 +177,23 @@ string LinuxParser::User(int pid) {
   }
   return string();
 }
+
+vector<string> LinuxParser::ProcessUtilizaton(int pid) { 
+  std::string path = kProcDirectory + std::to_string(pid) + kStatFilename;
+  std::ifstream filestream(path);
+  string line;
+
+  if (filestream.is_open()) { std::getline(filestream, line); }
+  std::vector<int> ids{13, 14, 15, 16, 21};
+
+  vector<string> out;
+  for (auto i : ids){
+    string elem = LinuxParser::GetElementByIndex(line, i);
+    if (elem.size() > 0){ out.push_back(elem); }
+  }
+  return out;
+}
+
 
 long LinuxParser::UpTime(int pid[[maybe_unused]]) { return 0; }
 
