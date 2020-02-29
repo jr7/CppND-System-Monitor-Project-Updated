@@ -18,6 +18,13 @@ const std::string kVersionFilename{"/version"};
 const std::string kOSPath{"/etc/os-release"};
 const std::string kPasswordPath{"/etc/passwd"};
 
+
+std::string FindLineByKey(std::string path, std::string key);
+std::vector<std::string> SplitLine(std::string line);
+std::string GetElementByIndex(std::string line, int index);
+
+
+
 // System
 float MemoryUtilization();
 long UpTime();

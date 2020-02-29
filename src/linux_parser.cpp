@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <string>
 #include <vector>
+#include <iterator>
 
 #include "linux_parser.h"
 
@@ -90,11 +91,41 @@ vector<string> LinuxParser::CpuUtilization() {
   } 
 }
 
+string LinuxParser::FindLineByKey(string path, string key){
+  std::ifstream filestream(path);
+  string line;
 
+  if (filestream.is_open()) {
+    while (std::getline(filestream, line)) {
+      if (line.find(key) != string::npos)  return line; 
+    }
+  }
+  return string();
+}
 
+vector<string> LinuxParser::SplitLine(string line){
+  std::istringstream stream(line);
+  vector<string> output(std::istream_iterator<string>{stream},
+                                  std::istream_iterator<string>());
+  return output;
+}
 
-// TODO: Read and return the system memory utilization
-float LinuxParser::MemoryUtilization() { return 0.0; }
+string LinuxParser::GetElementByIndex(string line, int index){
+  vector<string> out = LinuxParser::SplitLine(line);
+  return out[index];
+}
+
+float LinuxParser::MemoryUtilization() { 
+  string path = kProcDirectory + kMeminfoFilename;
+  string memtot_str = LinuxParser::FindLineByKey(path, "MemTotal");
+  string memfree_str = LinuxParser::FindLineByKey(path, "MemFree");
+
+  float memtotal = std::stof(LinuxParser::GetElementByIndex(memtot_str, 1));
+  float memfree = std::stof(LinuxParser::GetElementByIndex(memfree_str, 1)); 
+
+  return (memtotal - memfree)/memtotal;
+}
+
 
 
 // TODO: Read and return the total number of processes
